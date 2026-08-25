@@ -22,9 +22,18 @@ class DatabaseHelper {
 
     return await openDatabase(
       path,
-      version: 1,
+      version: 2,
       onCreate: _onCreate,
+      onUpgrade: _onUpgrade,
     );
+  }
+
+  Future<void> _onUpgrade(Database db, int oldVersion, int newVersion) async {
+    await db.execute('DROP TABLE IF EXISTS order_items');
+    await db.execute('DROP TABLE IF EXISTS orders');
+    await db.execute('DROP TABLE IF EXISTS food_items');
+    await db.execute('DROP TABLE IF EXISTS categories');
+    await _onCreate(db, newVersion);
   }
 
   Future<void> _onCreate(Database db, int version) async {
